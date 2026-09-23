@@ -1,0 +1,15 @@
+:root { font-family: Arial, Helvetica, sans-serif; color: #17204a; background: #f5f1e8; --blue: #2448a6; --muted: #5f6270; --line: #c8c5bb; }
+* { box-sizing: border-box; }
+body { margin: 0; padding: 52px 24px 80px; }
+main { max-width: 760px; margin: auto; }
+.monogram { width: 35px; height: 35px; display: grid; place-items: center; margin-bottom: 28px; border: 1px solid var(--blue); color: var(--blue); font-family: Georgia, serif; font-size: 13px; }
+.eyebrow { color: var(--blue); font-size: 10px; font-weight: 700; letter-spacing: .18em; }
+h1, h2 { color: var(--blue); font-family: Georgia, "Times New Roman", serif; font-weight: 400; }
+h1 { margin: 10px 0 12px; font-size: clamp(48px, 9vw, 76px); line-height: .9; letter-spacing: -.05em; }
+.updated { margin-bottom: 42px; color: var(--muted); font-size: 11px; }
+section { padding: 24px 0; border-top: 1px solid var(--blue); }
+section:last-child { border-bottom: 1px solid var(--blue); }
+h2 { margin: 0 0 12px; font-size: 25px; }
+p, li { color: var(--muted); font-size: 14px; line-height: 1.65; }
+li { margin-bottom: 7px; }
+a { color: var(--blue); }

@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "Canvas Assessment Tracker",
+  "version": "0.3.0",
+  "description": "A local-first checklist for Canvas assignments and announcement action items, with optional Calendar reminders.",
+  "permissions": [
+    "storage",
+    "identity",
+    "sidePanel",
+    "tabs",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://elearn.ucr.edu/*"
+  ],
+  "optional_host_permissions": [
+    "https://*/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Open Canvas Assessment Tracker"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "options_page": "options.html"
+}

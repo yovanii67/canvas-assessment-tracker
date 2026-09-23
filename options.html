@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Canvas Tracker Settings</title>
+    <link rel="stylesheet" href="options.css">
+  </head>
+  <body>
+    <main>
+      <header>
+        <div class="monogram" aria-hidden="true">CT</div>
+        <p class="eyebrow">LOCAL-FIRST COURSEWORK</p>
+        <h1>Settings &amp;<br>privacy</h1>
+        <p class="intro">Nothing is scanned until you sign in to Canvas yourself and press the scan button.</p>
+      </header>
+
+      <section>
+        <p class="section-number">01</p>
+        <div class="section-content">
+          <h2>Canvas website</h2>
+          <p>Enter your school's official Canvas address. The browser will request access only for this exact website.</p>
+          <label>
+            Canvas address
+            <input id="canvasBaseUrl" type="url" autocomplete="off" placeholder="https://elearn.ucr.edu">
+          </label>
+          <p class="hint">Examples: <code>https://elearn.ucr.edu</code> or <code>https://school.instructure.com</code>. HTTPS is required.</p>
+        </div>
+      </section>
+
+      <section>
+        <p class="section-number">02</p>
+        <div class="section-content">
+          <h2>Optional Google Calendar</h2>
+          <label class="check-row feature-toggle">
+            <input id="calendarEnabled" type="checkbox">
+            <span>Enable Google Calendar integration</span>
+          </label>
+          <p>Calendar access is off by default. The extension never sees your Google password or saves your email address. If enabled, authorization tokens stay in this browser's local extension storage.</p>
+
+          <div id="calendarSettings">
+            <label>
+              Authorized redirect URL
+              <div class="copy-row">
+                <code id="redirectUrl"></code>
+                <button id="copyRedirect" type="button">Copy</button>
+              </div>
+            </label>
+            <label>
+              Google OAuth Client ID
+              <input id="googleClientId" type="text" autocomplete="off" placeholder="1234567890-abc.apps.googleusercontent.com">
+            </label>
+            <details>
+              <summary>Google OAuth setup instructions</summary>
+              <ol>
+                <li>Create or select a project in Google Cloud Console.</li>
+                <li>Enable the Google Calendar API.</li>
+                <li>Configure the OAuth consent screen for the intended users.</li>
+                <li>Create a Web application OAuth Client ID.</li>
+                <li>Add the redirect URL shown above to Authorized redirect URIs.</li>
+                <li>Paste only the Client ID here. Never paste a client secret.</li>
+              </ol>
+            </details>
+            <label>
+              Reminder minutes
+              <input id="reminderMinutes" type="text" inputmode="numeric" placeholder="10080, 1440, 120">
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <p class="section-number">03</p>
+        <div class="section-content">
+          <h2>Announcement scanning</h2>
+          <label>
+            Recent-announcement window (days)
+            <input id="announcementLookbackDays" type="number" min="1" max="30" step="1">
+          </label>
+          <label class="check-row">
+            <input id="includeAllAnnouncements" type="checkbox">
+            <span>Include announcements without assessment keywords</span>
+          </label>
+          <p class="hint">Seven days is recommended. Unchanged announcements are skipped unless the professor edits them.</p>
+        </div>
+      </section>
+
+      <section>
+        <p class="section-number">04</p>
+        <div class="section-content">
+          <h2>Privacy controls</h2>
+          <p>Assignments, announcement text, checklist history, settings, and optional Google tokens are stored only in this browser profile. There is no tracker account, analytics service, or shared database.</p>
+          <div class="policy-links">
+            <a href="terms.html" target="_blank">Terms of Use ↗</a>
+            <a href="privacy.html" target="_blank">Privacy Notice ↗</a>
+          </div>
+          <button id="deleteData" class="danger" type="button">Delete all local data</button>
+          <p class="hint">This removes scanned coursework, completed-task history, settings, acceptance history, and locally stored Google authorization tokens.</p>
+        </div>
+      </section>
+
+      <div class="save-row">
+        <button id="save" class="save" type="button">Save settings</button>
+        <p id="status" role="status"></p>
+      </div>
+    </main>
+    <script src="options.js"></script>
+  </body>
+</html>

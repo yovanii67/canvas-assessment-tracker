@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Canvas Assessment Tracker</title>
+    <link rel="stylesheet" href="sidepanel.css">
+  </head>
+  <body>
+    <section id="termsGate" class="terms-gate" aria-labelledby="termsTitle">
+      <div class="monogram" aria-hidden="true">CT</div>
+      <p class="eyebrow">PRIVATE BY DESIGN</p>
+      <h1 id="termsTitle">Your coursework.<br>Your device.</h1>
+      <p class="terms-lead">Before continuing, please accept the terms for responsible use.</p>
+
+      <div class="terms-copy">
+        <p>By accepting, you confirm that you:</p>
+        <ul>
+          <li>will use the tracker only with a Canvas account you are authorized to access;</li>
+          <li>will sign in manually on your school's official Canvas website;</li>
+          <li>understand that course data is stored locally in this browser profile;</li>
+          <li>will verify deadlines in Canvas before relying on reminders.</li>
+        </ul>
+        <p>No Canvas passwords or email addresses are collected or saved by this extension. Optional Google authorization tokens remain in local browser storage.</p>
+        <p class="independent-note">Independent student tool. Not affiliated with Instructure, Google, UCR, or another school.</p>
+      </div>
+
+      <label class="accept-row">
+        <input id="acceptTermsCheckbox" type="checkbox">
+        <span>I have read and accept the Terms of Use and Privacy Notice.</span>
+      </label>
+      <button id="acceptTermsButton" class="primary wide" type="button" disabled>Accept &amp; continue</button>
+      <div class="policy-links">
+        <a href="terms.html" target="_blank">Terms of Use</a>
+        <a href="privacy.html" target="_blank">Privacy Notice</a>
+      </div>
+    </section>
+
+    <div id="app" hidden>
+      <header>
+        <div>
+          <p class="eyebrow">CANVAS COURSEWORK</p>
+          <h1>Assessment<br>tracker</h1>
+        </div>
+        <button id="settingsButton" class="icon-button" title="Settings" aria-label="Open settings">Settings ↗</button>
+      </header>
+
+      <p class="privacy-strip"><span aria-hidden="true">●</span> Local scan only · Manual login · No passwords or email addresses saved</p>
+
+      <section class="connection-card">
+        <div>
+          <span class="section-kicker">OPTIONAL</span>
+          <strong>Google Calendar</strong>
+          <span id="googleStatus" class="muted">Checking…</span>
+        </div>
+        <button id="googleButton" class="secondary" type="button">Connect</button>
+      </section>
+
+      <button id="scanButton" class="primary wide" type="button">Scan open Canvas tab</button>
+      <p id="scanStatus" class="status" role="status">Sign in manually on your Canvas site, then scan.</p>
+
+      <nav class="tabs" aria-label="Assessment filters">
+        <button class="tab active" data-filter="todo" type="button">To-do <span id="todoCount">0</span></button>
+        <button class="tab" data-filter="pending" type="button">Review <span id="pendingCount">0</span></button>
+        <button class="tab" data-filter="calendar" type="button">Calendar <span id="calendarCount">0</span></button>
+        <button class="tab" data-filter="dismissed" type="button">Dismissed</button>
+      </nav>
+
+      <main id="itemList"></main>
+    </div>
+
+    <template id="itemTemplate">
+      <article class="item-card">
+        <div class="item-topline">
+          <span class="course"></span>
+          <span class="confidence"></span>
+        </div>
+        <h2 class="item-title"></h2>
+        <span class="kind"></span>
+        <label>
+          Due date and time
+          <input class="due-at" type="datetime-local">
+        </label>
+        <p class="details"></p>
+        <div class="links">
+          <a class="source-link" target="_blank" rel="noreferrer">View original in Canvas ↗</a>
+        </div>
+        <div class="actions">
+          <button class="dismiss secondary" type="button">Dismiss</button>
+          <button class="add primary" type="button">Add to Calendar</button>
+        </div>
+      </article>
+    </template>
+
+    <template id="todoTemplate">
+      <article class="todo-card">
+        <label class="todo-check-row">
+          <input class="todo-check" type="checkbox">
+          <span class="todo-title"></span>
+        </label>
+        <div class="todo-meta">
+          <span class="course"></span>
+          <span class="kind"></span>
+        </div>
+        <label class="todo-date-label">
+          Due date and time (optional)
+          <input class="due-at" type="datetime-local">
+        </label>
+        <p class="details"></p>
+        <div class="links">
+          <a class="source-link" target="_blank" rel="noreferrer">View source in Canvas ↗</a>
+        </div>
+        <div class="actions">
+          <button class="add primary" type="button">Add to Calendar</button>
+        </div>
+      </article>
+    </template>
+
+    <script src="sidepanel.js"></script>
+  </body>
+</html>

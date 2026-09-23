@@ -1,0 +1,10 @@
+.DS_Store
+Thumbs.db
+*.crx
+*.pem
+*.key
+*.log
+.env
+.env.*
+dist/
+releases/
