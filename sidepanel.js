@@ -162,9 +162,11 @@ function allTasks() {
         ...task,
         key,
         parentKey: item.key,
+        parentTitle: item.title,
         courseCode: task.courseCode || item.courseCode,
         courseName: task.courseName || item.courseName,
         sourceUrl: task.sourceUrl || item.sourceUrl,
+        sourceType: task.sourceType || item.sourceType,
         kind: task.kind || item.kindLabel || item.kind || "Task",
         dueAt: state.userEditedDate ? state.dueAt : (task.dueAt || null),
         completed: Boolean(state.completed),
@@ -182,6 +184,41 @@ function allTasks() {
   });
 }
 
+function groupTasks(tasks) {
+  const groups = new Map();
+  for (const task of tasks) {
+    const isAnnouncement = /announcement/i.test(task.sourceType || "");
+    const course = task.courseCode || task.courseName || "Canvas";
+    const key = isAnnouncement ? task.parentKey : `course:${course}:assignments`;
+    if (!groups.has(key)) {
+      groups.set(key, {
+        key,
+        title: isAnnouncement ? (task.parentTitle || "Course announcement") : `${course} assignments`,
+        course,
+        label: isAnnouncement ? "announcement" : "coursework",
+        sourceUrl: isAnnouncement ? task.sourceUrl : "",
+        tasks: []
+      });
+    }
+    groups.get(key).tasks.push(task);
+  }
+  return [...groups.values()];
+}
+
+function summarizeTask(task) {
+  let summary = String(task.title || "Untitled task")
+    .replace(/\s+/g, " ")
+    .replace(/^(?:please\s+|you\s+(?:need to|should|must)\s+|make sure\s+(?:you\s+)?(?:to\s+)?|remember\s+to\s+)/i, "")
+    .trim();
+  const firstSentence = summary.match(/^.*?[.!?](?:\s|$)/)?.[0]?.trim();
+  if (firstSentence && firstSentence.length >= 12) summary = firstSentence;
+  if (summary.length > 105) {
+    const shortened = summary.slice(0, 102);
+    summary = `${shortened.replace(/\s+\S*$/, "").replace(/[,:;.!?]+$/, "")}…`;
+  }
+  return summary.charAt(0).toUpperCase() + summary.slice(1);
+}
+
 function render() {
   if (!appInitialized) return;
   list.replaceChildren();
@@ -192,7 +229,7 @@ function render() {
 
   if (activeFilter === "todo") {
     if (!tasks.length) return renderEmpty("No tasks yet. Sign in to Canvas and run a manual scan.");
-    for (const task of tasks) list.append(renderTodoCard(task));
+    for (const group of groupTasks(tasks)) list.append(renderTodoGroup(group));
     return;
   }
 
@@ -211,6 +248,24 @@ function renderEmpty(message) {
   list.append(empty);
 }
 
+function renderTodoGroup(group) {
+  const fragment = $("#todoGroupTemplate").content.cloneNode(true);
+  const section = fragment.querySelector(".todo-group");
+  const remaining = group.tasks.filter((task) => !task.completed).length;
+  section.querySelector(".todo-group-label").textContent = `${group.course} · ${group.label}`;
+  section.querySelector(".todo-group-title").textContent = group.title;
+  section.querySelector(".todo-group-count").textContent =
+    `${group.tasks.length} ${group.tasks.length === 1 ? "item" : "items"} · ${remaining} remaining`;
+
+  const source = section.querySelector(".todo-group-source");
+  if (group.sourceUrl) source.href = group.sourceUrl;
+  else source.remove();
+
+  const taskList = section.querySelector(".todo-group-items");
+  for (const task of group.tasks) taskList.append(renderTodoCard(task));
+  return section;
+}
+
 function renderTodoCard(task) {
   const fragment = $("#todoTemplate").content.cloneNode(true);
   const card = fragment.querySelector(".todo-card");
@@ -224,10 +279,19 @@ function renderTodoCard(task) {
     render();
   });
 
-  card.querySelector(".todo-title").textContent = task.title;
-  card.querySelector(".course").textContent = task.courseCode || task.courseName || "Canvas";
+  const summary = summarizeTask(task);
+  card.querySelector(".todo-title").textContent = summary;
   card.querySelector(".kind").textContent = task.kind || "Task";
-  card.querySelector(".details").textContent = task.details || "No additional details were provided.";
+
+  const details = card.querySelector(".task-details");
+  const generatedAnnouncementDetail = `From announcement: ${task.title}`;
+  const originalText = summary !== task.title
+    ? task.title
+    : task.details && task.details !== generatedAnnouncementDetail
+      ? task.details
+      : "";
+  if (originalText) details.querySelector(".details").textContent = originalText;
+  else details.remove();
 
   const source = card.querySelector(".source-link");
   if (task.sourceUrl) source.href = task.sourceUrl;
@@ -243,7 +307,7 @@ function renderTodoCard(task) {
   });
 
   const addButton = card.querySelector(".add");
-  addButton.textContent = !calendarEnabled ? "Calendar off" : task.calendarUrl ? "Update Calendar" : task.dueAt ? "Add to Calendar" : "Set date to add";
+  addButton.textContent = !calendarEnabled ? "reminders off" : task.calendarUrl ? "update reminder" : task.dueAt ? "remind" : "set a date";
   addButton.disabled = !calendarEnabled || !task.dueAt;
   addButton.addEventListener("click", () => addTaskToCalendar(task, addButton));
   return card;
@@ -274,7 +338,7 @@ function renderCard(item) {
   });
 
   const addButton = card.querySelector(".add");
-  addButton.textContent = !calendarEnabled ? "Calendar off" : item.status === "calendar" ? "Update Calendar" : "Add to Calendar";
+  addButton.textContent = !calendarEnabled ? "reminders off" : item.status === "calendar" ? "update reminder" : "remind";
   addButton.disabled = !calendarEnabled;
   addButton.addEventListener("click", () => addItemToCalendar(item, addButton));
   card.querySelector(".dismiss").addEventListener("click", async () => {
@@ -334,10 +398,10 @@ async function saveCalendarEvent(item, button) {
   button.disabled = false;
   if (!response?.ok) {
     setStatus(response?.error || "Could not add the calendar event.", "error");
-    button.textContent = "Add to Calendar";
+    button.textContent = "remind";
     return null;
   }
-  setStatus(response.event.updated ? "Calendar event updated." : "Calendar event created with reminders.", "success");
+  setStatus(response.event.updated ? "Reminder updated." : "Reminder added to Google Calendar.", "success");
   return response;
 }
 

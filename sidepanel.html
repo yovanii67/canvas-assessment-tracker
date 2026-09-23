@@ -87,9 +87,21 @@
         </div>
         <div class="actions">
           <button class="dismiss secondary" type="button">Dismiss</button>
-          <button class="add primary" type="button">Add to Calendar</button>
+          <button class="add primary" type="button">remind</button>
         </div>
       </article>
+    </template>
+
+    <template id="todoGroupTemplate">
+      <section class="todo-group">
+        <div class="todo-group-heading">
+          <p class="todo-group-label"></p>
+          <h2 class="todo-group-title"></h2>
+          <p class="todo-group-count"></p>
+          <a class="todo-group-source" target="_blank" rel="noreferrer">view announcement in Canvas ↗</a>
+        </div>
+        <div class="todo-group-items"></div>
+      </section>
     </template>
 
     <template id="todoTemplate">
@@ -99,19 +111,21 @@
           <span class="todo-title"></span>
         </label>
         <div class="todo-meta">
-          <span class="course"></span>
           <span class="kind"></span>
         </div>
         <label class="todo-date-label">
           Due date and time (optional)
           <input class="due-at" type="datetime-local">
         </label>
-        <p class="details"></p>
+        <details class="task-details">
+          <summary>show original instruction</summary>
+          <p class="details"></p>
+        </details>
         <div class="links">
           <a class="source-link" target="_blank" rel="noreferrer">View source in Canvas ↗</a>
         </div>
         <div class="actions">
-          <button class="add primary" type="button">Add to Calendar</button>
+          <button class="add primary" type="button">remind</button>
         </div>
       </article>
     </template>
